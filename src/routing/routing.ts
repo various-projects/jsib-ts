@@ -1,5 +1,6 @@
 import { KnownRoute, makeComplete, mapFromDto, parseUri, Route, ThreadRoute } from "./route";
 import { RouteDto } from "./routeDto";
+import { showBoard } from "./routes/boardRoute";
 import { highlightMessage } from "./routes/messageRoute";
 import { showThread } from "./routes/threadRoute";
 import { RouteType } from "./routeType";
@@ -29,7 +30,7 @@ export const go = async (uri: string) => {
     }
     
     if (currentRoute.type === RouteType.board) {
-        loadBoard(currentRoute.board);
+        showBoard(currentRoute.board!);
     }
     else {
         showThread({ ...currentRoute, message: undefined, type: RouteType.thread } as ThreadRoute);

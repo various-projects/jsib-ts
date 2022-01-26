@@ -1,0 +1,1 @@
+export const showBoard = (boardSlug: string) => {};
