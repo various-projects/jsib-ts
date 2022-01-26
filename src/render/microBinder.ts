@@ -3,6 +3,21 @@ type Binding = {
     value: any,
 }
 
+// Yeah, I wanted to do this all with ReactJS,
+// but it kinda sucks at mixing components into dynamic HTML.
+// I mean, replacing the message refs with a component was not as easy of a task
+// as I prefered it to. One more gravestone on my pet projects cemetery
+// has "JSib-react" inscribed on it.
+// So anyway, I've put in this pretty basic binder that I've… invented(?) for some
+// other side project. Should be more than enough for those basic needs we've got here.
+// And the syntax is pretty straightforward:
+// you just add a "data-bind" attribute (yes-yes-yes, just like KnockoutJS)
+// to the nodes of your template element and then define
+// which data field of the data object goes to what property, like this:
+// <div data-bind="text > innerHTML,onClickHandler > onclick"></div>
+// applyBindings(myDiv, {text: "HELL-O WORLD-O!", onClickHandler: ()=>alert('PWNED!')});
+// Oh! And as the innerHTML binding is oh so common, that is the default value
+
 export const applyBindings = <T = any>(element: HTMLElement, data: T, shouldClone = true, shouldKeepBindingAttributes = false): HTMLElement => {
     element = shouldClone
         ? element.cloneNode(true) as HTMLElement
