@@ -1,2 +1,2 @@
-Finally after reachin a Senior WebMonkey level I decided to finish up this piece of… code. I mean, the [JSib](https://github.com/various-projects/JSib). Not even 10 years has passed since I started it… or has it?
-Anyway, this time it in TypeScript. Hope that'll clean things up enough for me to finish it in no time.
+Finally after reaching a Senior WebMonkey level I decided to finish up this piece of… code. I mean, the [JSib](https://github.com/various-projects/JSib). Not even 10 years has passed since I started it… or has it?
+Anyway, this time it's in TypeScript. Hope that'll clean things up enough for me to finish it in no time.
