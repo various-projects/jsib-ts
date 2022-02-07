@@ -42,7 +42,11 @@ export const applyBindings = <T = any>(element: HTMLElement, data: T, shouldClon
                 ? binding.target
                 : "innerHTML";
 
-            (node as any)[targetProperty] = data[binding.value as keyof T];
+            if (targetProperty.startsWith("data")) {
+                node.setAttribute(targetProperty, (data[binding.value as keyof T]) + "");
+            } else {
+                (node as any)[targetProperty] = data[binding.value as keyof T];
+            }
         });
 
         // So that we could apply bindings for the inner content filled during this binding:

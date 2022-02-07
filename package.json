@@ -1,7 +1,8 @@
 {
     "type": "module",
     "scripts": {
-        "build": "tsc -p ."
+        "build": "tsc -p . --watch",
+        "build-dev": "tsc -p . --watch --inlineSourceMap"
     },
     "devDependencies": {
         "typescript": "^4.5.5"

@@ -1,9 +1,7 @@
-import { RouteType } from "./routeType";
-import { RouteDto } from "./routeDto";
+import { RouteType } from "./routeType.js";
+import { RouteDto } from "./routeDto.js";
 
 export type Route = RouteDto & {
-    /** Full URI path to object as string. Appropriate to use as a link to it. */
-    uri: string,
     /** Path type — what kind of object it is pointing to. */
     type: RouteType,
 }
@@ -28,7 +26,8 @@ export type MessageRoute = Route & {
 
 export type KnownRoute = BoardRoute | ThreadRoute | MessageRoute;
 
-const getUri = (path: RouteDto) => {
+/** Full URI path to object as string. Appropriate to use as a link to it. */
+export const getUri = (path: RouteDto): string => {
     let parts = [];
     path.board !== undefined && parts.push(path.board);
     path.thread !== undefined && parts.push(path.thread);
@@ -68,7 +67,6 @@ export const makeComplete = (cripple: Readonly<Partial<Route>>, donor: Route): R
 export const mapFromDto = (dto: RouteDto): Route => ({
     ...dto,
     type: getRouteType(dto),
-    uri: getUri(dto)
 });
 
 const uriParseRegex = /^((\w+)\/?(\/(\d+)|))\/?(\/(\d+)|)?$/;
@@ -77,12 +75,12 @@ export const parseUri = (uri: string): Route => {
     const matches = uri.match(uriParseRegex);
 
     if (!matches) {
-        return { uri, type: RouteType.invalid };
+        return { type: RouteType.invalid };
     }
 
     return mapFromDto({
         board: matches[2],
-        thread: +matches[4],
-        message: +matches[6]
+        thread: (+matches[4]) || undefined,
+        message: (+matches[6]) || undefined
     });
 }

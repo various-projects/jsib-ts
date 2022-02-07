@@ -1,10 +1,10 @@
-import { ThreadRoute } from "../route";
-import * as Service from '../../services/threadService';
-import { renderThread } from "../../render/thread/thread";
-import { defaultTitle } from "../routing";
+import { ThreadRoute } from "../route.js";
+import * as Service from "../../services/threadService.js";
+import { renderThread } from "../../rendering/thread/threadComponent.js";
+import { defaultTitle } from "../routing.js";
 
 export const showThread = async (route: ThreadRoute) => {
-    const threadData = await Service.getThread(route);
+    const threadData = await Service.getThread(route, true);
     if(!threadData) {
         alert('No such thread!');
         return;

@@ -1,7 +1,8 @@
-import { MessageDto } from "../../common/models/messageDto";
-import { Route } from "../../routing/route";
-import * as MicroBinder from "../microBinder";
-import { template, TemplateProps } from "./messageTemplate";
+import { MessageDto } from "../../common/models/messageDto.js";
+import { Route } from "../../routing/route.js";
+import * as MicroBinder from "../microBinder.js";
+import { parseMarkup } from "./markupParser.js";
+import { template, TemplateProps } from "./messageTemplate.js";
 
 type Props = {
     onMessageClick?: (route: Route) => void,
@@ -27,7 +28,7 @@ export const renderMessage = (props: Props): HTMLElement => {
         event.stopPropagation();
         event.preventDefault();
 
-        const anchor = event.target as HTMLAnchorElement;
+        const anchor = event.currentTarget as HTMLAnchorElement;
         const img = anchor.querySelector("img");
 
         if (!img) return;
@@ -53,12 +54,14 @@ export const renderMessage = (props: Props): HTMLElement => {
             onReplyClick,
             onGoOriginalThreadClick,
             onNumberClick,
+            name: props.message.name,
             date: props.message.date,
             email: props.message.email,
-            text: props.message.text,
+            text: props.message.text ? parseMarkup(props.message.text) : "",
             title: props.message.title,
-            pic: props.message.pic ? `${props.route.thread}/thumb/${props.message.pic}` : "",
-            largePic: props.message.pic ? `${props.route.thread}/src/${props.message.pic}` : "",
+            number: props.route.message!,
+            pic: props.message.pic ? `boards/${props.route.board}/${props.route.thread}/thumb/${props.message.pic}` : "",
+            largePic: props.message.pic ? `boards/${props.route.board}/${props.route.thread}/src/${props.message.pic}` : "",
         }
     );
 
@@ -73,5 +76,5 @@ export const renderMessage = (props: Props): HTMLElement => {
         ref && props.onRefClick(ref, target);
     }
 
-    return MicroBinder.applyBindings(element, { onRefClick });
+    return MicroBinder.applyBindings(element, { onRefClick }, false);
 }

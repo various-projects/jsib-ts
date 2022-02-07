@@ -1,12 +1,11 @@
-import { KnownRoute, makeComplete, mapFromDto, parseUri, Route, ThreadRoute } from "./route";
-import { RouteDto } from "./routeDto";
-import { showBoard } from "./routes/boardRoute";
-import { highlightMessage } from "./routes/messageRoute";
-import { showThread } from "./routes/threadRoute";
-import { RouteType } from "./routeType";
+import { makeComplete, mapFromDto, parseUri, Route, ThreadRoute } from "./route.js";
+import { RouteDto } from "./routeDto.js";
+import { showBoard } from "./routes/boardRoute.js";
+import { highlightMessage } from "./routes/messageRoute.js";
+import { showThread } from "./routes/threadRoute.js";
+import { RouteType } from "./routeType.js";
 
 let currentRoute: Route = mapFromDto({
-    uri: "",
 });
 
 export const defaultTitle = document.title + " ";
@@ -14,29 +13,31 @@ export const defaultTitle = document.title + " ";
 export const getAbsoluteRoute = (relativeRoute: RouteDto) =>
     makeComplete(relativeRoute, currentRoute);
 
-export const go = async (uri: string) => {
+export const go = async (uri?: string) => {
     if (typeof (uri) === "string") {
         location.hash = uri;
     } else {
         uri = location.hash.replace("#", "");
     }
 
-    currentRoute = parseUri(uri);
+    const newRoute = parseUri(uri);
 
-    if (currentRoute.type === RouteType.invalid) {
+    if (newRoute.type === RouteType.invalid) {
         //if URI's unparsable — get out.
         alert("Invalid URI");
         return;
     }
     
-    if (currentRoute.type === RouteType.board) {
-        showBoard(currentRoute.board!);
+    if (newRoute.type === RouteType.board) {
+        showBoard(newRoute.board!);
     }
     else {
-        showThread({ ...currentRoute, message: undefined, type: RouteType.thread } as ThreadRoute);
+        await showThread({ ...newRoute, message: undefined, type: RouteType.thread } as ThreadRoute);
     }
 
-    if (currentRoute.type === RouteType.message && currentRoute.message !== undefined) {
-        highlightMessage(currentRoute.message);
+    if (newRoute.type === RouteType.message && newRoute.message !== undefined) {
+        highlightMessage(newRoute.message);
     }
+
+    currentRoute = newRoute;
 }
