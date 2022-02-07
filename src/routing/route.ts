@@ -27,11 +27,11 @@ export type MessageRoute = Route & {
 export type KnownRoute = BoardRoute | ThreadRoute | MessageRoute;
 
 /** Full URI path to object as string. Appropriate to use as a link to it. */
-export const getUri = (path: RouteDto): string => {
+export const getUri = (route: RouteDto): string => {
     let parts = [];
-    path.board !== undefined && parts.push(path.board);
-    path.thread !== undefined && parts.push(path.thread);
-    path.message !== undefined && parts.push(path.message);
+    route.board !== undefined && parts.push(route.board);
+    route.thread !== undefined && parts.push(route.thread);
+    route.message !== undefined && parts.push(route.message);
     return parts.join("/");
 }
 

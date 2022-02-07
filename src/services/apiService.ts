@@ -21,7 +21,7 @@ export const getThread = async (route: ThreadRoute, skipBytes = 0): Promise<Thre
         },
     }));
 
-    if(response.status === 416) {
+    if (response.status === 416) {
         return {
             messages: [],
             size: 0,
@@ -47,3 +47,9 @@ export const getThread = async (route: ThreadRoute, skipBytes = 0): Promise<Thre
         size,
     };
 }
+
+export const postMessage = (data: FormData) =>
+    fetch("post.php", {
+        method: "POST",
+        body: data
+    })
