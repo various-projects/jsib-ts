@@ -1,11 +1,17 @@
 import { ThreadDto } from "../../common/models/threadDto.js";
-import { getUri, makeComplete, ThreadRoute } from "../../routing/route.js";
+import { getUri, makeComplete, MessageRoute, ThreadRoute } from "../../routing/route.js";
 import { go } from "../../routing/routing.js";
 import { renderMessage } from "../message/messageComponent.js";
 
-export const renderThread = (threadData: ThreadDto, threadRoute: ThreadRoute): HTMLElement[] =>
-    threadData.messages.map((message, index) => {
-        const messageRoute = makeComplete({ message: index + 1 }, threadRoute);
+type Props = {
+    data: ThreadDto,
+    route: ThreadRoute,
+    onShowRef: (targetRoute: MessageRoute, target: HTMLElement) => Promise<void>,
+}
+
+export const renderThread = (props: Props): HTMLElement[] =>
+    props.data.messages.map((message, index) => {
+        const messageRoute = makeComplete({ message: index + 1 }, props.route);
         const messageUri = getUri(messageRoute);
         return renderMessage({
             message,
@@ -13,7 +19,7 @@ export const renderThread = (threadData: ThreadDto, threadRoute: ThreadRoute): H
             onMessageClick: () => go(messageUri),
             onGoOriginal: () => go(messageUri),
             onNumberClick: () => go(messageUri),
-            onRefClick: () => { },
+            onRefClick: props.onShowRef,
             onReplyClick: () => { },
         });
     });

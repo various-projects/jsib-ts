@@ -1,5 +1,5 @@
 import { MessageDto } from "../../common/models/messageDto.js";
-import { Route } from "../../routing/route.js";
+import { mapFromDto, MessageRoute, Route } from "../../routing/route.js";
 import * as MicroBinder from "../microBinder.js";
 import { parseMarkup } from "./markupParser.js";
 import { template, TemplateProps } from "./messageTemplate.js";
@@ -8,7 +8,7 @@ type Props = {
     onMessageClick?: (route: Route) => void,
     onNumberClick?: (route: Route) => void,
     onReplyClick: () => void,
-    onRefClick: (ref: string, target: HTMLElement) => void,
+    onRefClick: (targetRoute: MessageRoute, target: HTMLElement) => void,
     onGoOriginal?: (route: Route) => void,
     message: MessageDto,
     /** Message route */
@@ -71,9 +71,15 @@ export const renderMessage = (props: Props): HTMLElement => {
 
         const target = event.target as HTMLElement;
 
-        const ref = target.dataset.ref;
+        const ref = target.dataset.ref!.split("/").reverse();
 
-        ref && props.onRefClick(ref, target);
+        const messageRoute = mapFromDto({
+            message: +ref[0],
+            thread: ref[1] === undefined ? props.route.thread : +ref[1],
+            board: ref[2] === undefined ? props.route.board : ref[2],
+        }) as MessageRoute;
+
+        ref && props.onRefClick(messageRoute, target);
     }
 
     return MicroBinder.applyBindings(element, { onRefClick }, false);

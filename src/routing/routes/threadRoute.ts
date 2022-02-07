@@ -1,8 +1,38 @@
-import { getUri, ThreadRoute } from "../route.js";
+import { getUri, MessageRoute, parseUri, ThreadRoute } from "../route.js";
 import * as Service from "../../services/threadService.js";
 import { renderThread } from "../../rendering/thread/threadComponent.js";
-import { defaultTitle } from "../routing.js";
+import { defaultTitle, go } from "../routing.js";
 import * as ApiService from "../../services/apiService.js";
+import { RouteType } from "../routeType.js";
+import { renderMessage } from "../../rendering/message/messageComponent.js";
+
+const showRef = async (targetRoute: MessageRoute, target: HTMLElement): Promise<void> => {
+    const threadData = await Service.getThread({ ...targetRoute, message: undefined, type: RouteType.thread }, true);
+
+    if (!threadData) {
+        console.error(`Thread not found for ${getUri(targetRoute)} ref`);
+        alert(`Thread not found for ${getUri(targetRoute)} ref`);
+        return;
+    }
+
+    if (target.dataset.refShown !== 'true') {
+        let message = threadData.messages[targetRoute.message];
+        target.appendChild(
+            renderMessage({
+                message,
+                onRefClick: showRef,
+                onReplyClick: () => go(getUri(targetRoute)),
+                route: targetRoute,
+                onGoOriginal: () => go(getUri(targetRoute)),
+            })
+        );
+
+        target.dataset.refShown = 'true';
+    } else {
+        target.removeChild(target.children[0]);
+        target.dataset.refShown = 'false';
+    }
+}
 
 export const showThread = async (route: ThreadRoute) => {
     const threadData = await Service.getThread(route, true);
@@ -10,7 +40,11 @@ export const showThread = async (route: ThreadRoute) => {
         alert('No such thread!');
         return;
     }
-    const messages = renderThread(threadData, route);
+    const messages = renderThread({
+        data: threadData,
+        route,
+        onShowRef: showRef,
+    });
 
     const mainWrapper = document.getElementById("content")!;
 
@@ -33,7 +67,7 @@ const postMessage = (route: ThreadRoute) => async (event: SubmitEvent) => {
 
     if (!form || !submitButton) {
         throw new Error("What have you done to my kingdom, script-kiddie?");
-    }    
+    }
 
     submitButton.blur();
     submitButton.disabled = true;
