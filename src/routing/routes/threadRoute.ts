@@ -1,13 +1,13 @@
 import { getUri, MessageRoute, parseUri, ThreadRoute } from "../route.js";
 import * as Service from "../../services/threadService.js";
 import { renderThread } from "../../rendering/thread/threadComponent.js";
-import { defaultTitle, go } from "../routing.js";
+import * as Routing from "../routing.js";
 import * as ApiService from "../../services/apiService.js";
 import { RouteType } from "../routeType.js";
 import { renderMessage } from "../../rendering/message/messageComponent.js";
 
-const showRef = async (targetRoute: MessageRoute, target: HTMLElement): Promise<void> => {
-    const threadData = await Service.getThread({ ...targetRoute, message: undefined, type: RouteType.thread }, true);
+const showRef = (threadRoute: ThreadRoute) => async (targetRoute: MessageRoute, target: HTMLElement): Promise<void> => {
+    const threadData = await Service.getThread({ ...targetRoute, message: undefined, type: RouteType.thread });
 
     const targetUri = getUri(targetRoute);
 
