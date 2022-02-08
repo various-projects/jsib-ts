@@ -11,7 +11,7 @@ type Props = {
 
 export const renderThread = (props: Props): HTMLElement[] =>
     props.data.messages.map((message, index) => {
-        const messageRoute = makeComplete<MessageRoute>({ message: index + 1 }, props.route);
+        const messageRoute = makeComplete<MessageRoute>({ message: index }, props.route);
         const messageUri = getUri(messageRoute);
         return renderMessage({
             message,

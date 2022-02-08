@@ -1,5 +1,6 @@
 import { MessageDto } from "../../common/models/messageDto.js";
-import { getThreadRoute, getUri, mapFromDto, MessageRoute, Route } from "../../routing/route.js";
+import { getThreadRoute, getUri, mapFromDto, MessageRoute, parseUri, Route } from "../../routing/route.js";
+import { RouteType } from "../../routing/routeType.js";
 import * as MicroBinder from "../microBinder.js";
 import { parseMarkup } from "./markupParser.js";
 import { template, TemplateProps } from "./messageTemplate.js";
@@ -48,6 +49,18 @@ export const renderMessage = (props: Props): HTMLElement => {
 
     const originalThreadUri = "#" + (props.onGoOriginal ? getUri(getThreadRoute(props.route)) : "");
 
+    const linkCompleter = (ref: string) => {
+        const parts = ref.split("/").reverse();
+
+        const messageRoute = mapFromDto({
+            message: +parts[0],
+            thread: parts[1] === undefined ? props.route.thread : +parts[1],
+            board: parts[2] === undefined ? props.route.board : parts[2],
+        }) as MessageRoute;
+
+        return getUri(messageRoute);
+    } 
+
     const element = MicroBinder.applyBindings<TemplateProps>(
         template,
         {
@@ -59,7 +72,7 @@ export const renderMessage = (props: Props): HTMLElement => {
             name: props.message.name,
             date: props.message.date,
             email: props.message.email,
-            text: props.message.text ? parseMarkup(props.message.text) : "",
+            text: props.message.text ? parseMarkup(props.message.text, linkCompleter) : "",
             title: props.message.title,
             number: props.route.message!,
             originalThreadUri,
@@ -73,16 +86,15 @@ export const renderMessage = (props: Props): HTMLElement => {
         event.preventDefault();
 
         const target = event.currentTarget as HTMLElement;
+        const ref = target.dataset.ref;
 
-        const ref = target.dataset.ref!.split("/").reverse();
+        if(!ref) return;
 
-        const messageRoute = mapFromDto({
-            message: +ref[0],
-            thread: ref[1] === undefined ? props.route.thread : +ref[1],
-            board: ref[2] === undefined ? props.route.board : ref[2],
-        }) as MessageRoute;
+        const messageRoute = parseUri(ref);
 
-        ref && props.onRefClick(messageRoute, target);
+        if(messageRoute.type !== RouteType.message) return;
+
+        props.onRefClick(messageRoute as MessageRoute, target);
     }
 
     return MicroBinder.applyBindings(element, { onRefClick }, false);

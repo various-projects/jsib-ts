@@ -1,4 +1,4 @@
-export const parseMarkup = (text: string): string => {
+export const parseMarkup = (text: string, linkCompleter: (match: string) => string): string => {
     //URL links:
     text = text.replace(/(https?:\/\/[^\s]+)/g, '<a href="$1" target="_blank">$1</a>');
 
@@ -6,7 +6,10 @@ export const parseMarkup = (text: string): string => {
     //like >>/b/123/123, >>123/123, >>123
     text = text.replace(
         />>((\w+\/|)(\d+\/|)\d+)/g,
-        "<a data-ref='$1' data-bind='onRefClick > onclick' href='#$1' class='msg_ref'>$&</a>"
+        (match, submatch) => {
+            const uri = linkCompleter(submatch);
+            return `<a data-ref='${uri}' data-bind='onRefClick > onclick' href='#${uri}' class='msg_ref'>${match}</a>`;
+        }
     );
 
     //Markup:

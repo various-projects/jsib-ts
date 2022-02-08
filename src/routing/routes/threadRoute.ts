@@ -21,8 +21,8 @@ const showRef = async (targetRoute: MessageRoute, target: HTMLElement): Promise<
         target.appendChild(
             renderMessage({
                 message,
-                onRefClick: showRef,
-                onReplyClick: () => go(targetUri),
+                onRefClick: showRef(threadRoute),
+                onReplyClick: () => Routing.go(targetUri),
                 route: targetRoute,
                 onGoOriginal: () => go(targetUri),
             })
@@ -44,7 +44,7 @@ export const showThread = async (route: ThreadRoute) => {
     const messages = renderThread({
         data: threadData,
         route,
-        onShowRef: showRef,
+        onShowRef: showRef(route),
     });
 
     const mainWrapper = document.getElementById("content")!;
@@ -54,7 +54,7 @@ export const showThread = async (route: ThreadRoute) => {
     mainWrapper.append(...messages);
 
     let opMessage = threadData.messages[0];
-    document.title = defaultTitle + (opMessage.title ? opMessage.title : opMessage.text.substring(0, 50));
+    document.title = Routing.defaultTitle + (opMessage.title ? opMessage.title : opMessage.text.substring(0, 50));
 
     document.querySelector<HTMLFormElement>("#post-form")?.addEventListener("submit", postMessage(route));
 }

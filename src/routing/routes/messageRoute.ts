@@ -6,7 +6,7 @@ export const highlightMessage = (messageId: number) => {
     highlightedMessages.forEach(messageElement =>
         messageElement.classList.remove("selected")
     );
-    var messageDiv = document.querySelectorAll(".message")[messageId - 1];
+    var messageDiv = document.querySelectorAll(".message")[messageId];
     messageDiv.classList.add("selected");
     messageDiv.scrollIntoView();
 }
