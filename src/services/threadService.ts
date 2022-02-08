@@ -4,11 +4,9 @@ import * as ApiService from "./apiService.js";
 
 export const getThread = async (route: ThreadRoute, update = false) => {
     const thread = Repository.getThread(route);
-    if(update) {
+    if(update || !thread) {
         const skip = thread && thread.size;
         Repository.addToThread(route, await ApiService.getThread(route, skip));
-    } else {
-        return thread;
     }
     
     return Repository.getThread(route);
