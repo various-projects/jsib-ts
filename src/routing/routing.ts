@@ -9,9 +9,6 @@ let currentRoute: Route = mapFromDto({
 
 export const defaultTitle = document.title + " ";
 
-export const getAbsoluteRoute = (relativeRoute: RouteDto) =>
-    makeComplete(relativeRoute, currentRoute);
-
 export const go = async (uri?: string) => {
     if (typeof (uri) === "string") {
         location.hash = uri;
