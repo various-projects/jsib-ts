@@ -1,4 +1,4 @@
-import { makeComplete, mapFromDto, parseUri, Route, ThreadRoute } from "./route.js";
+import { BoardRoute, getThreadRoute, makeComplete, mapFromDto, MessageRoute, parseUri, Route, ThreadRoute } from "./route.js";
 import { RouteDto } from "./routeDto.js";
 import { showBoard } from "./routes/boardRoute.js";
 import { highlightMessage } from "./routes/messageRoute.js";
@@ -27,16 +27,18 @@ export const go = async (uri?: string) => {
         alert("Invalid URI");
         return;
     }
+
+    const validRoute = newRoute as (BoardRoute | ThreadRoute | MessageRoute);
     
-    if (newRoute.type === RouteType.board) {
-        showBoard(newRoute.board!);
+    if (validRoute.type === RouteType.board) {
+        showBoard(validRoute.board!);
     }
     else {
-        await showThread({ ...newRoute, message: undefined, type: RouteType.thread } as ThreadRoute);
+        await showThread(getThreadRoute(validRoute));
     }
 
-    if (newRoute.type === RouteType.message && newRoute.message !== undefined) {
-        highlightMessage(newRoute.message);
+    if (validRoute.type === RouteType.message && validRoute.message !== undefined) {
+        highlightMessage(validRoute.message);
     }
 
     currentRoute = newRoute;

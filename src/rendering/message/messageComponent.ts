@@ -1,5 +1,5 @@
 import { MessageDto } from "../../common/models/messageDto.js";
-import { mapFromDto, MessageRoute, Route } from "../../routing/route.js";
+import { getThreadRoute, getUri, mapFromDto, MessageRoute, Route } from "../../routing/route.js";
 import * as MicroBinder from "../microBinder.js";
 import { parseMarkup } from "./markupParser.js";
 import { template, TemplateProps } from "./messageTemplate.js";
@@ -12,7 +12,7 @@ type Props = {
     onGoOriginal?: (route: Route) => void,
     message: MessageDto,
     /** Message route */
-    route: Route,
+    route: MessageRoute,
 }
 
 const wrapOnClick = <T extends any[]>(handler: (...params: T) => void, ...params: T) => (event: MouseEvent) => {
@@ -46,6 +46,8 @@ export const renderMessage = (props: Props): HTMLElement => {
 
     const onNumberClick = props.onNumberClick && wrapOnClick(props.onNumberClick, props.route);
 
+    const originalThreadUri = "#" + (props.onGoOriginal ? getUri(getThreadRoute(props.route)) : "");
+
     const element = MicroBinder.applyBindings<TemplateProps>(
         template,
         {
@@ -60,6 +62,7 @@ export const renderMessage = (props: Props): HTMLElement => {
             text: props.message.text ? parseMarkup(props.message.text) : "",
             title: props.message.title,
             number: props.route.message!,
+            originalThreadUri,
             pic: props.message.pic ? `boards/${props.route.board}/${props.route.thread}/thumb/${props.message.pic}` : "",
             largePic: props.message.pic ? `boards/${props.route.board}/${props.route.thread}/src/${props.message.pic}` : "",
         }
@@ -69,7 +72,7 @@ export const renderMessage = (props: Props): HTMLElement => {
         event.stopPropagation();
         event.preventDefault();
 
-        const target = event.target as HTMLElement;
+        const target = event.currentTarget as HTMLElement;
 
         const ref = target.dataset.ref!.split("/").reverse();
 

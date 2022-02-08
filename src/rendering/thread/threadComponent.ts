@@ -11,13 +11,12 @@ type Props = {
 
 export const renderThread = (props: Props): HTMLElement[] =>
     props.data.messages.map((message, index) => {
-        const messageRoute = makeComplete({ message: index + 1 }, props.route);
+        const messageRoute = makeComplete<MessageRoute>({ message: index + 1 }, props.route);
         const messageUri = getUri(messageRoute);
         return renderMessage({
             message,
             route: messageRoute,
-            onMessageClick: () => go(messageUri),
-            onGoOriginal: () => go(messageUri),
+            onMessageClick: () => { },
             onNumberClick: () => go(messageUri),
             onRefClick: props.onShowRef,
             onReplyClick: () => { },

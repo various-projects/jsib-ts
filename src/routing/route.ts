@@ -57,12 +57,19 @@ const getRouteType = (route: RouteDto): RouteType => {
     return RouteType.invalid;
 }
 
-export const makeComplete = (cripple: Readonly<Partial<Route>>, donor: Route): Route => mapFromDto({
+export const makeComplete = <T extends Route>(cripple: Readonly<Partial<Route>>, donor: Route): T => mapFromDto({
     message: cripple.message || donor.message,
     thread: cripple.thread || donor.thread,
     board: cripple.board || donor.board,
     type: Math.max(cripple.type || 0, donor.type)
-});
+}) as T;
+
+export const getThreadRoute = (messageRoute: MessageRoute | ThreadRoute): ThreadRoute =>
+    ({
+        ...messageRoute,
+        message: undefined,
+        type: RouteType.thread,
+    });
 
 export const mapFromDto = (dto: RouteDto): Route => ({
     ...dto,

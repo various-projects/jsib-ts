@@ -9,9 +9,10 @@ import { renderMessage } from "../../rendering/message/messageComponent.js";
 const showRef = async (targetRoute: MessageRoute, target: HTMLElement): Promise<void> => {
     const threadData = await Service.getThread({ ...targetRoute, message: undefined, type: RouteType.thread }, true);
 
+    const targetUri = getUri(targetRoute);
+
     if (!threadData) {
-        console.error(`Thread not found for ${getUri(targetRoute)} ref`);
-        alert(`Thread not found for ${getUri(targetRoute)} ref`);
+        console.error(`Thread not found for ${targetUri} targetUrigetUri(targetRoute)} ref`);
         return;
     }
 
@@ -21,9 +22,9 @@ const showRef = async (targetRoute: MessageRoute, target: HTMLElement): Promise<
             renderMessage({
                 message,
                 onRefClick: showRef,
-                onReplyClick: () => go(getUri(targetRoute)),
+                onReplyClick: () => go(targetUri),
                 route: targetRoute,
-                onGoOriginal: () => go(getUri(targetRoute)),
+                onGoOriginal: () => go(targetUri),
             })
         );
 

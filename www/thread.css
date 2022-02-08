@@ -80,7 +80,7 @@ a.msg_ref {
     content: " by Anonymous";
 }
 
-a.orig-thread:not([href]) {
+a.orig-thread[href="#"] {
     display: none;
 }
 

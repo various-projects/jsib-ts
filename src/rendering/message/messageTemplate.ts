@@ -12,6 +12,8 @@ export type TemplateProps = {
     text: string,
     number: number,
     name: string,
+    /** Use "#" for no link */
+    originalThreadUri: string,
 }
 
 export const template = document.createElement("message");
@@ -23,7 +25,7 @@ template.innerHTML = `
         left at <span data-bind="date > " class="messageDate">12 Jan 1945 at 12:45</span>
         <a data-bind="email > href" class="messageMail"><span data-bind="name > " class="message-name">Anonymous</span></a>
         <span data-bind="title > " class="message-title"></span>
-        <a data-bind="onGoOriginalThreadClick > onclick" class="orig-thread">→original thread</a>
+        <a data-bind="onGoOriginalThreadClick > onclick,originalThreadUri > href" class="orig-thread">→original thread</a>
         <a data-bind="onReplyClick > onclick" class="replyLink">→reply</a>
     </div>
     <a data-bind="onPicClick > onclick,largePic > href" href="#">
