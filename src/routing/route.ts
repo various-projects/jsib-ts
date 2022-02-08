@@ -35,13 +35,7 @@ export const getUri = (route: RouteDto): string => {
     return parts.join("/");
 }
 
-const getThreadId = (route: RouteDto) => `${route.board}/${route.thread}`;
-
 const getRouteType = (route: RouteDto): RouteType => {
-    if (route.type !== undefined) {
-        return route.type;
-    }
-
     if (route.message) {
         return RouteType.message;
     }
@@ -65,11 +59,11 @@ export const makeComplete = <T extends Route>(cripple: Readonly<Partial<Route>>,
 }) as T;
 
 export const getThreadRoute = (messageRoute: MessageRoute | ThreadRoute): ThreadRoute =>
-    ({
-        ...messageRoute,
-        message: undefined,
-        type: RouteType.thread,
-    });
+({
+    ...messageRoute,
+    message: undefined,
+    type: RouteType.thread,
+});
 
 export const mapFromDto = (dto: RouteDto): Route => ({
     ...dto,

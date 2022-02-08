@@ -1,5 +1,4 @@
 import { BoardRoute, getThreadRoute, makeComplete, mapFromDto, MessageRoute, parseUri, Route, ThreadRoute } from "./route.js";
-import { RouteDto } from "./routeDto.js";
 import { showBoard } from "./routes/boardRoute.js";
 import { highlightMessage } from "./routes/messageRoute.js";
 import { showThread } from "./routes/threadRoute.js";
