@@ -30,6 +30,8 @@ div.message div.message .messageText {
 
 div.message div.message {
     width: 100%;
+    margin-bottom: 0;
+    padding-bottom: 0;
 }
 
 .message-pic {
