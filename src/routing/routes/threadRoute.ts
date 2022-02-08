@@ -16,6 +16,10 @@ const showRef = (threadRoute: ThreadRoute) => async (targetRoute: MessageRoute, 
         return;
     }
 
+    const shouldShowGoOriginalThread =
+        targetRoute.board !== threadRoute.board ||
+        targetRoute.thread !== threadRoute.thread;
+
     if (target.dataset.refShown !== 'true') {
         let message = threadData.messages[targetRoute.message];
         target.appendChild(
@@ -24,7 +28,9 @@ const showRef = (threadRoute: ThreadRoute) => async (targetRoute: MessageRoute, 
                 onRefClick: showRef(threadRoute),
                 onReplyClick: () => Routing.go(targetUri),
                 route: targetRoute,
-                onGoOriginal: () => go(targetUri),
+                onGoOriginal: shouldShowGoOriginalThread
+                    ? () => Routing.go(targetUri)
+                    : undefined,
             })
         );
 
